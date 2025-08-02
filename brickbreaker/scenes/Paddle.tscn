@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bgocu3t0prux6"]
+[gd_scene load_steps=4 format=3 uid="uid://bgocu3t0prux6"]
 
 [ext_resource type="Script" uid="uid://b0wmc6px7drj4" path="res://scripts/paddle.gd" id="1_ry5ju"]
+[ext_resource type="Texture2D" uid="uid://dl5y35veiqxj" path="res://assets/sprites/paddle.png" id="2_6kxou"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6kxou"]
 
@@ -9,3 +10,6 @@ script = ExtResource("1_ry5ju")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_6kxou")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_6kxou")
