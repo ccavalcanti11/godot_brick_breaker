@@ -211,33 +211,6 @@ Getting started is straightforward. This project is built with Godot 4.x, so ens
 
 For more, explore the code—every file has comments!
 
-Project Structure
-The project is organized modularly for easy navigation. Here's a detailed overview of the file structure:
-
-brick-breaker-godot/
-├── project.godot          # Main project file
-├── Main.tscn              # Root scene managing game states
-├── scenes/                # All game scenes
-│   ├── Paddle.tscn        # Paddle object with movement script
-│   ├── Ball.tscn          # Ball with physics and collision logic
-│   ├── Brick.tscn         # Reusable brick prefab
-│   ├── Level1.tscn        # Example level scene (duplicate for more levels)
-│   ├── MainMenu.tscn      # Start menu UI
-│   ├── PauseMenu.tscn     # Pause overlay
-│   └── LevelSelect.tscn   # Level selection menu
-├── scripts/               # GDScript files
-│   ├── Paddle.gd          # Paddle controls
-│   ├── Ball.gd            # Ball behavior and signals
-│   ├── LevelManager.gd    # Handles level loading, lives, and scoring
-│   └── Menu.gd            # UI button logic
-├── assets/                # Images, sounds, and other resources
-│   ├── sprites/           # Paddle.png, Ball.png, Brick.png
-│   ├── sounds/            # Bounce.wav, Break.wav
-│   └── fonts/             # Custom fonts for UI
-├── icon.png               # Project icon
-└── README.md              # This file
-This structure promotes reusability—e.g., instance the Brick.tscn multiple times in a level scene to build grids.
-
 ## Contributing
 
 ### We welcome contributions to make this project even better! Whether it's bug fixes, new features, or improved assets, here's how:
