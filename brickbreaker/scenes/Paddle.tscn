@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://bgocu3t0prux6"]
+
+[node name="Paddle" type="Node2D"]
