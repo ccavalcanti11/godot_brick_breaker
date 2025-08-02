@@ -3,8 +3,7 @@ simple brick breaker godot replica for study purposes
 
 # Brick Breaker Replica: A Classic 2D Game Built in Godot
 
-![Brick Breaker Screenshot](https://via.placeholder.com/800x600?text=Game+Screenshot)  
-*(Placeholder for a game screenshot. Replace with an actual image from your project assets.)*
+![Brick Breaker Screenshot](screenshots/game_screenshot.png)
 
 ## Overview
 
