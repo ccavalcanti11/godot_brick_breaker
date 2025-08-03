@@ -4,8 +4,9 @@
 [ext_resource type="Script" uid="uid://bjbvr76whio52" path="res://scripts/ball.gd" id="1_ja1hk"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ig1eg"]
+radius = 18.0
 
-[node name="Ball" type="RigidBody2D"]
+[node name="Ball" type="RigidBody2D" groups=["ball"]]
 script = ExtResource("1_ja1hk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

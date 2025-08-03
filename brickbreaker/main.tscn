@@ -1,12 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4jhuy50r0b8"]
+[gd_scene load_steps=2 format=3 uid="uid://c4jhuy50r0b8"]
 
-[ext_resource type="PackedScene" uid="uid://bgocu3t0prux6" path="res://scenes/Paddle.tscn" id="1_ig7tw"]
-[ext_resource type="PackedScene" uid="uid://h8swijcshsmy" path="res://scenes/Ball.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://c8vv1in40tbhb" path="res://scenes/Level-1.tscn" id="1_ig7tw"]
 
 [node name="Main" type="Node2D"]
 
-[node name="Paddle" parent="." instance=ExtResource("1_ig7tw")]
-position = Vector2(406, 461)
-
-[node name="Ball" parent="." instance=ExtResource("2_0xm2m")]
-position = Vector2(384, 160)
+[node name="Level-1" parent="." instance=ExtResource("1_ig7tw")]

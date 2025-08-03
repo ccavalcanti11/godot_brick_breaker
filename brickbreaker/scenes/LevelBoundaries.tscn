@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://bfmqsr8y8ikku"]
+
+[ext_resource type="PackedScene" uid="uid://d1mjwi6lp3x8q" path="res://scenes/DeathZone.tscn" id="1_6ovph"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kncvy"]
+size = Vector2(800, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6ovph"]
+size = Vector2(20, 600)
+
+[node name="LevelBoundaries" type="Node2D"]
+
+[node name="Up" type="StaticBody2D" parent="."]
+position = Vector2(400, 0)
+
+[node name="Up" type="CollisionShape2D" parent="Up"]
+shape = SubResource("RectangleShape2D_kncvy")
+
+[node name="DeathZone" parent="." instance=ExtResource("1_6ovph")]
+position = Vector2(400, 600)
+
+[node name="LeftStaticBody" type="StaticBody2D" parent="."]
+
+[node name="Left" type="CollisionShape2D" parent="LeftStaticBody"]
+position = Vector2(0, 300)
+shape = SubResource("RectangleShape2D_6ovph")
+
+[node name="RightStaticBody" type="StaticBody2D" parent="."]
+
+[node name="Right" type="CollisionShape2D" parent="RightStaticBody"]
+position = Vector2(800, 300)
+shape = SubResource("RectangleShape2D_6ovph")
