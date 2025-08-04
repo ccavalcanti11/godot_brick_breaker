@@ -1,3 +1,32 @@
-[gd_scene format=3 uid="uid://cn8frkes28q6b"]
+[gd_scene load_steps=2 format=3 uid="uid://cn8frkes28q6b"]
 
-[node name="Node2D" type="Node2D"]
+[ext_resource type="Script" uid="uid://byh3ft0dj3cyl" path="res://scripts/pause_menu.gd" id="1_jvnd5"]
+
+[node name="Node2D" type="ColorRect"]
+color = Color(0, 0, 0, 0.745098)
+script = ExtResource("1_jvnd5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+text = "PAUSED"
+
+[node name="ResumeButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "RESUME"
+
+[node name="MainMenuButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "MAIN MENU"
+
+[connection signal="pressed" from="VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
