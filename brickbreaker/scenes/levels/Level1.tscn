@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://c8vv1in40tbhb"]
+
+[ext_resource type="PackedScene" uid="uid://bfmqsr8y8ikku" path="res://scenes/LevelBoundaries.tscn" id="1_fh0io"]
+[ext_resource type="PackedScene" uid="uid://0xx5bqm8eycu" path="res://scenes/Brick.tscn" id="2_68ib6"]
+[ext_resource type="PackedScene" uid="uid://h8swijcshsmy" path="res://scenes/Ball.tscn" id="3_76cw8"]
+[ext_resource type="PackedScene" uid="uid://bgocu3t0prux6" path="res://scenes/Paddle.tscn" id="4_m00rq"]
+
+[node name="Level1" type="Node2D"]
+
+[node name="LevelBoundaries" parent="." instance=ExtResource("1_fh0io")]
+
+[node name="Bricks" type="Node" parent="."]
+
+[node name="Brick" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(227, 25)
+
+[node name="Brick2" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(269, 25)
+
+[node name="Brick3" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(311, 25)
+
+[node name="Brick4" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(356, 25)
+
+[node name="Brick5" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(398, 25)
+
+[node name="Brick6" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(440, 25)
+
+[node name="Brick7" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(487, 25)
+
+[node name="Brick8" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(529, 25)
+
+[node name="Brick9" parent="Bricks" instance=ExtResource("2_68ib6")]
+position = Vector2(571, 25)
+
+[node name="Ball" parent="." instance=ExtResource("3_76cw8")]
+position = Vector2(377, 493)
+
+[node name="Paddle" parent="." instance=ExtResource("4_m00rq")]
+position = Vector2(386, 527)

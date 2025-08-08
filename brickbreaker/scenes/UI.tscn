@@ -1,13 +1,16 @@
-[gd_scene format=3 uid="uid://nxckna6084lt"]
+[gd_scene load_steps=2 format=3 uid="uid://nxckna6084lt"]
+
+[ext_resource type="Script" uid="uid://d21hon1yj775p" path="res://scripts/ui.gd" id="1_dj8aq"]
 
 [node name="UI" type="CanvasLayer"]
+script = ExtResource("1_dj8aq")
 
 [node name="ScoreLabel" type="Label" parent="."]
 offset_right = 40.0
 offset_bottom = 23.0
 text = "Score: 0"
 
-[node name="LiveLabel" type="Label" parent="."]
+[node name="LivesLabel" type="Label" parent="."]
 offset_left = 80.0
 offset_right = 137.0
 offset_bottom = 23.0
