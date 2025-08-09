@@ -31,7 +31,7 @@ func _process(delta: float) -> void:
 	if ball_on_paddle:
 		var ball = ball_container.get_child(0)
 		if ball:
-			ball.global_position = paddle.global_position + Vector2(0, -30)
+			ball.position = paddle.position + Vector2(0, -40)
 	
 	# Launch the ball:
 		if Input.is_action_just_pressed("launch_ball"):
@@ -44,8 +44,10 @@ func _process(delta: float) -> void:
 			get_tree().paused = true
 			var pause_menu = PauseMenuScene.instantiate()
 			add_child(pause_menu)
+
 func _on_brick_destroyed():
 	GameManager.add_score(100)
+	print("Score: " + GameManager.current_score)
 	
 	if level_container.get_child(0).get_child_count() == 0:
 		GameManager.load_level(GameManager.current_level + 1)
