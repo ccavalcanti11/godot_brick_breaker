@@ -44,14 +44,6 @@ func load_level(level_number: int) -> void:
 	
 	# Connect all bricks' destroyed signals
 	connect_bricks(level)
-
-func connect_bricks(level: Node):
-	# Recursively find and connect brick signals
-	for brick in level.get_children():
-		if brick is StaticBody2D and brick.has_signal("destroyed"):
-			brick.destroyed.connect(_on_brick_destroyed)
-		elif brick.get_child_count() > 0:
-			connect_bricks(brick)
 	
 func _process(delta: float) -> void:
 	if ball_on_paddle:
@@ -70,6 +62,14 @@ func _process(delta: float) -> void:
 			var pause_menu = PauseMenuScene.instantiate()
 			add_child(pause_menu)
 
+func connect_bricks(level: Node):
+	# Recursively find and connect brick signals
+	for brick in level.get_children():
+		if brick is StaticBody2D and brick.has_signal("destroyed"):
+			brick.destroyed.connect(_on_brick_destroyed)
+		elif brick.get_child_count() > 0:
+			connect_bricks(brick)
+
 func _on_brick_destroyed():
 	GameManager.add_score(100)
 	print("Score: ", GameManager.current_score)
@@ -78,16 +78,23 @@ func _on_brick_destroyed():
 	# Check if all bricks are destroyed in the current level
 	var level = level_container.get_child(0)
 	if level:
-		# Count remaining bricks in the level
-		var remaining_bricks = 0
-		for brick in level.get_children():
-			if brick is StaticBody2D and brick.has_signal("destroyed"):
-				remaining_bricks += 1
-		
+		var remaining_bricks = count_remaining_bricks(level)
+		print("remaaning bricks: ", remaining_bricks)
 		if remaining_bricks == 0:
 			print("All bricks destroyed! Loading next level.")
-			GameManager.load_level(GameManager.current_level+1)
-			load_level(GameManager.current_level)
+			#GameManager.load_level(GameManager.current_level+1)
+			#load_level(GameManager.current_level)
+	
+
+func count_remaining_bricks(node: Node) -> int:
+	var remaining_bricks = 0
+	
+	for child in node.get_children():
+		if child is StaticBody2D and has_signal("destroyed"):
+			remaining_bricks += 1
+		elif child.get_child_count() > 0:
+			remaining_bricks += count_remaining_bricks(child)
+	return remaining_bricks
 	
 
 func reset_ball():
