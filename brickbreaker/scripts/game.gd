@@ -52,7 +52,7 @@ func load_level(level_number: int) -> void:
 		print("Connected DeathZone signal")
 	
 	# Connect all bricks' destroyed signals
-	connect_bricks(level)
+	# connect_bricks(level)
 	
 func _process(delta: float) -> void:
 	if ball_on_paddle:
@@ -85,7 +85,7 @@ func _on_brick_destroyed():
 	
 	# Count how many bricks are left
 	var remaining_bricks = count_remaining_bricks()
-	print("Remaining bricks: ", remaining_bricks)
+	print("_on_brick_destroyed - Remaining bricks: ", remaining_bricks)
 	
 	# Load the next level if no bricks present
 	if remaining_bricks <= 0:
@@ -100,10 +100,10 @@ func count_remaining_bricks() -> int:
 	if bricks_node:
 		print("count_remaining_bricks - bricks_node != null")
 		for brick in bricks_node.get_children():
-			if brick is StaticBody2D and has_signal("destroyed"):
+			if brick is StaticBody2D and brick.has_signal("destroyed"):
 				remaining_bricks += 1
-
-	return remaining_bricks
+	print("count_remaining_bricks - remaining bricks: ", remaining_bricks)
+	return remaining_bricks - 1
 	
 
 func reset_ball():
