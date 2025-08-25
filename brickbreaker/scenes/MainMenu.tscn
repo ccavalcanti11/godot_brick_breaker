@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwoo5vrcqpgwm"]
+[gd_scene load_steps=3 format=3 uid="uid://dwoo5vrcqpgwm"]
 
 [ext_resource type="Script" uid="uid://bjym2oqir6u2p" path="res://scripts/main_menu.gd" id="1_yqorp"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_yqorp"]
+font_size = 50
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -14,26 +17,40 @@ size_flags_vertical = 3
 script = ExtResource("1_yqorp")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -187.5
+offset_right = 187.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 text = "BRICK BREAKER"
+label_settings = SubResource("LabelSettings_yqorp")
 
-[node name="StartButton" type="Button" parent="VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="StartButton" type="Button" parent="VBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "START"
 
-[node name="LevelSelectButton" type="Button" parent="VBoxContainer"]
+[node name="LevelSelectButton" type="Button" parent="VBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "LEVEL SELECT"
 
-[node name="QuitButton" type="Button" parent="VBoxContainer"]
+[node name="QuitButton" type="Button" parent="VBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "QUIT"
 
-[connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/LevelSelectButton" to="." method="_on_level_select_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/LevelSelectButton" to="." method="_on_level_select_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
