@@ -51,8 +51,6 @@ func load_level(level_number: int) -> void:
 		death_zone.ball_lost.connect(_on_ball_lost)
 		print("Connected DeathZone signal")
 	
-	# Connect all bricks' destroyed signals
-	# connect_bricks(level)
 	
 func _process(delta: float) -> void:
 	if ball_on_paddle:
