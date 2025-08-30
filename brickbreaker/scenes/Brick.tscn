@@ -9,12 +9,8 @@ size = Vector2(35, 18)
 [node name="Brick" type="StaticBody2D"]
 script = ExtResource("1_0fr63")
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_0fr63")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_y4mou")
-
-[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

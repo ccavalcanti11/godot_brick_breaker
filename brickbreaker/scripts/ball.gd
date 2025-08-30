@@ -22,8 +22,10 @@ func _physics_process(delta: float) -> void:
 			var paddle_width = collider.get_width() # Use the paddle's get_width() method
 			var offset = (global_position.x - collider.global_position.x) / (paddle_width / 2)
 			velocity.x += offset * speed # Affect trajectory based on hit location
-		if collider.name == "PurpleBrick":
+			
+		if collider.name == "PurpleBrick" || collider.name == "Brick" || collider.has_signal("destroyed"):
 			collider.call("hit")
 		
 		# Calculate bounce effect
 		velocity = velocity.bounce(normal).normalized() * speed
+	
