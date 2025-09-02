@@ -1,6 +1,7 @@
 extends RigidBody2D
 
 @export var speed = 400
+@export var min_vertical_speed = 100 # min vertical velocity to avoid being too horizontal
 var velocity = Vector2.ZERO
 
 func launch(dir: Vector2):
@@ -23,9 +24,14 @@ func _physics_process(delta: float) -> void:
 			var offset = (global_position.x - collider.global_position.x) / (paddle_width / 2)
 			velocity.x += offset * speed # Affect trajectory based on hit location
 			
+		# Checking collision against brick
 		if collider.name == "PurpleBrick" || collider.name == "Brick" || collider.has_signal("destroyed"):
 			collider.call("hit")
 		
 		# Calculate bounce effect
 		velocity = velocity.bounce(normal).normalized() * speed
+		
+		# Ensuring the ball doesn't get stuck bouncing horizontally
+		if abs(velocity.y) <= min_vertical_speed: # Check if y is too small
+			velocity.y = sign(velocity.y) * min_vertical_speed # Fix it to the threshold while keeping the direction
 	

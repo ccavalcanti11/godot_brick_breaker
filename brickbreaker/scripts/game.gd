@@ -91,7 +91,7 @@ func _on_brick_destroyed():
 		#GameManager.load_level(GameManager.current_level + 1)
 		#load_level(GameManager.current_level)
 	
-
+	
 func count_remaining_bricks() -> int:
 	var remaining_bricks = 0
 	print("bricks_node is: ", bricks_node)
