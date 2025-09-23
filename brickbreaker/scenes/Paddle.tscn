@@ -1,24 +1,50 @@
-[gd_scene load_steps=5 format=3 uid="uid://bgocu3t0prux6"]
+[gd_scene load_steps=8 format=3 uid="uid://bgocu3t0prux6"]
 
 [ext_resource type="Script" uid="uid://b0wmc6px7drj4" path="res://scripts/paddle.gd" id="1_ry5ju"]
-[ext_resource type="Texture2D" uid="uid://dl5y35veiqxj" path="res://assets/sprites/paddle.png" id="2_6kxou"]
+[ext_resource type="Texture2D" uid="uid://b6d0gdfx7v714" path="res://assets/sprites/robot-idle-anim-2.png" id="2_6kxou"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6kxou"]
-size = Vector2(60, 30)
+size = Vector2(27, 32)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jlx5f"]
 size = Vector2(60, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jlx5f"]
+atlas = ExtResource("2_6kxou")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c7ra2"]
+atlas = ExtResource("2_6kxou")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_s6nv3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jlx5f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c7ra2")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}]
 
 [node name="Paddle" type="CharacterBody2D"]
 script = ExtResource("1_ry5ju")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_6kxou")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_6kxou")
 
 [node name="SkillHitbox" type="CollisionShape2D" parent="."]
 position = Vector2(0, -100)
 shape = SubResource("RectangleShape2D_jlx5f")
 disabled = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_s6nv3")
+animation = &"idle"
+autoplay = "idle"
+frame_progress = 0.0601767
