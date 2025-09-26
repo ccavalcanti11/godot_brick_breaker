@@ -15,40 +15,62 @@ var _cool_down_left: float = 0.0
 @onready var skill_shape: CollisionShape2D = $SkillHitbox # Reference the skill hitbox collision shape
 
 func get_width() -> float:
-	if collision_shape and collision_shape.shape is RectangleShape2D:
-		return collision_shape.shape.size.x # Width of the collision shape
-	return 0 # Fallback in case the shape is not set
+	if collision_shape and collision_shape.shape is CapsuleShape2D:
+		var cap := collision_shape.shape as CapsuleShape2D
+		return cap.radius * 2.0
+	return 0.0 # Fallback in case the shape is not set
 
 func _ready():
 	setup_skill_hitbox()
 	set_skill_active(false)
 
 func setup_skill_hitbox() -> void:
-	# Ensure the main shape is a rectangle (needed to compute top edge and width)
-	var rect := collision_shape.shape as RectangleShape2D
-	if rect == null:
-		push_warning("Players CollisionShape2D should be RectangleShape2D for skill positioning.")
+	# Ensure the main shape is a capsule (needed to compute top edge and width)
+	var player_cap := collision_shape.shape as CapsuleShape2D
+	if player_cap == null:
+		push_warning("Players CollisionShape2D should be CapsuleShape2D for skill positioning.")
 		return
 	
-	# Make/assign a rectangle for the skill barrier and size it to the player width
-	var skill_rect := RectangleShape2D.new()
-	skill_rect.size = Vector2(rect.size.x, skill_thickness)
-	skill_shape.shape = skill_rect
+	# Create the skill capsule
+	var cap := CapsuleShape2D.new()
+	# Thickness controls the capsule's vertical thickness when horizontal:
+	# thickness = 2 * radius => radius = thickness / 2
+	cap.radius = max(skill_thickness * 0.5, 0.0)
 	
-	# Place the hitbox 10px above the top edge of the player
+	# Make the skill capsule span the player's width:
+	# When rotated 90., the horizontal length of the capsule is (height + 2 * radius)
+	# We want that to match player's width ( = 2 * player_cap.radius)
+	var player_width := get_width() # 2 * player_cap.radius
+	cap.height = max(player_width - (2.0 * cap.radius), 0.0) # if <= 0, it becomes a circle
+	
+	skill_shape.shape = cap
+	
+	# Rotate 90. so the capsule becomes horizontal (thin bar above the player)
+	skill_shape.rotation_degrees = 90.0
+	
+	# Position it above the top edge
 	update_skill_hitbox_transform()
 
 func update_skill_hitbox_transform() -> void:
-	var rect := collision_shape.shape as RectangleShape2D
-	if rect == null:
+	var player_cap := collision_shape.shape as CapsuleShape2D
+	if player_cap == null:
 		return
 	
-	# Paddle is centered at its own origin; top edge is at -size.y/2
-	var top_edge := -rect.size.y * 0.5
-	# Center of the skill rectangle sits half its thickness above the forward offset
-	var y := top_edge - skill_forward_offset - (skill_thickness * 0.5)
-	# Keep it centered in the X so it mirrors the player's width
+	# Total height of the vertical capsule (Y span)
+	var total_height := player_cap.height + (2.0 * player_cap.radius)
+	
+	# Player is centered at its origin; top edge is at -total_height / 2
+	var top_edge := -total_height * 0.5
+	
+	# The skill capsule's vertical thickness (in world y) is it diameter (2*radius)
+	var half_thickness := skill_thickness * 0.5
+	
+	# Center the skill capsule so its bottom edge is offset above the player's top edge
+	var y := top_edge - skill_forward_offset - half_thickness
+	
+	# Keep centered in x
 	skill_shape.position = Vector2(0.0, y)
+	
 
 func set_skill_active(active: bool) -> void:
 	if skill_shape:
@@ -78,9 +100,10 @@ func try_activate_skill() -> void:
 	if _cool_down_left > 0.0 or _skill_time_left > 0.0:
 		return
 	
-	# Ensure it sits at the right size/place just before 
+	# Ensure position is correct just before activation
 	update_skill_hitbox_transform()
 	$AnimatedSprite2D.play("attack")
+	
 	set_skill_active(true)
 	_skill_time_left = skill_duration
 	_cool_down_left = skill_cooldown

@@ -56,7 +56,7 @@ func _process(delta: float) -> void:
 	if ball_on_paddle:
 		var ball = ball_container.get_child(0)
 		if ball:
-			ball.position = paddle.position + Vector2(0, -40)
+			ball.position = paddle.position + Vector2(0, -60)
 	# Launch the ball:
 		if Input.is_action_just_pressed("launch_ball"):
 			ball_on_paddle = false
