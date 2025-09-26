@@ -47,8 +47,8 @@ func update_skill_hitbox_transform() -> void:
 	var top_edge := -rect.size.y * 0.5
 	# Center of the skill rectangle sits half its thickness above the forward offset
 	var y := top_edge - skill_forward_offset - (skill_thickness * 0.5)
-	
 	# Keep it centered in the X so it mirrors the player's width
+	skill_shape.position = Vector2(0.0, y)
 
 func set_skill_active(active: bool) -> void:
 	if skill_shape:
@@ -80,7 +80,7 @@ func try_activate_skill() -> void:
 	
 	# Ensure it sits at the right size/place just before 
 	update_skill_hitbox_transform()
-	
+	$AnimatedSprite2D.play("attack")
 	set_skill_active(true)
 	_skill_time_left = skill_duration
 	_cool_down_left = skill_cooldown

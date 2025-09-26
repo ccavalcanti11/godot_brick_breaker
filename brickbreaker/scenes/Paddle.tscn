@@ -1,14 +1,12 @@
 [gd_scene load_steps=12 format=3 uid="uid://bgocu3t0prux6"]
 
 [ext_resource type="Script" uid="uid://b0wmc6px7drj4" path="res://scripts/paddle.gd" id="1_ry5ju"]
-[ext_resource type="Texture2D" uid="uid://b6d0gdfx7v714" path="res://assets/sprites/robot-idle-anim-2.png" id="2_6kxou"]
 [ext_resource type="Texture2D" uid="uid://boltlmvbxgi0i" path="res://assets/sprites/robot-attack-anim.png" id="2_jlx5f"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6kxou"]
-size = Vector2(27, 32)
+[ext_resource type="Texture2D" uid="uid://clttvxqp3qa32" path="res://assets/sprites/robot-idle-anim-3.png" id="3_jlx5f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jlx5f"]
-size = Vector2(60, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c7ra2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_s6nv3"]
 atlas = ExtResource("2_jlx5f")
@@ -22,13 +20,13 @@ region = Rect2(64, 0, 64, 64)
 atlas = ExtResource("2_jlx5f")
 region = Rect2(128, 0, 64, 64)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_jlx5f"]
-atlas = ExtResource("2_6kxou")
-region = Rect2(0, 0, 32, 32)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_c7ra2"]
-atlas = ExtResource("2_6kxou")
-region = Rect2(32, 0, 32, 32)
+atlas = ExtResource("3_jlx5f")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jfyqb"]
+atlas = ExtResource("3_jlx5f")
+region = Rect2(64, 0, 64, 64)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_s6nv3"]
 animations = [{
@@ -51,10 +49,10 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_jlx5f")
+"texture": SubResource("AtlasTexture_c7ra2")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_c7ra2")
+"texture": SubResource("AtlasTexture_jfyqb")
 }],
 "loop": true,
 "name": &"idle",
@@ -65,16 +63,16 @@ animations = [{
 script = ExtResource("1_ry5ju")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0.5, 0)
-shape = SubResource("RectangleShape2D_6kxou")
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_jlx5f")
 
 [node name="SkillHitbox" type="CollisionShape2D" parent="."]
-position = Vector2(0, -100)
-shape = SubResource("RectangleShape2D_jlx5f")
+position = Vector2(0, -50)
+shape = SubResource("RectangleShape2D_c7ra2")
 disabled = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, 5)
 sprite_frames = SubResource("SpriteFrames_s6nv3")
 animation = &"idle"
 autoplay = "idle"
+offset = Vector2(0, -32)
