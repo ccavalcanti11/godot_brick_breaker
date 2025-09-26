@@ -3,7 +3,7 @@ extends CharacterBody2D
 @export var speed = 400
 
 # Skill tuning
-@export var skill_forward_offset: float = 10.0 # distance above player
+@export var skill_forward_offset: float = 25.0 # distance above player
 @export var skill_thickness: float = 6.0 # height of the hitzone shape
 @export var skill_duration: float = 0.18 # seconds the hit will be active
 @export var skill_cooldown: float = 0.65 # seconds before the hit can be triggered again
@@ -41,7 +41,7 @@ func setup_skill_hitbox() -> void:
 	# When rotated 90., the horizontal length of the capsule is (height + 2 * radius)
 	# We want that to match player's width ( = 2 * player_cap.radius)
 	var player_width := get_width() # 2 * player_cap.radius
-	cap.height = max(player_width - (2.0 * cap.radius), 0.0) # if <= 0, it becomes a circle
+	cap.height = max((16.0 * cap.radius), 0.0) # if <= 0, it becomes a circle
 	
 	skill_shape.shape = cap
 	
