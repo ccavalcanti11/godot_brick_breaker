@@ -30,9 +30,10 @@ A brick breaker game where instead of a simple platform, the player controls a r
 - The loop: grind on maps, defeat bricks until you have enough gold and materials to craft weapons and items to face the Boss
 
 ### Special Mechanics Ideas
-- The player starts as a simple platform
-- As they hit the ball and gain points, a special bar fills up
-- When at 100%, the player can unleash a special attack (e.g., transform into a powerful robot that throws multiple balls aggressively)
+- The player is always a robot
+- As they hit the ball, they fill up a special bar
+- Once the bar is filled, the player can unleash a special power related to their equipped core
+- Each core could have a special ultimate skill unique to that equipped core
 
 ### Parry System
 - Parry occurs when the player hits the ball in a specific frame
