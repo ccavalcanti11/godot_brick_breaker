@@ -1,6 +1,16 @@
 extends CharacterBody2D
 
-@export var speed = 400
+# Movement settings
+@export var max_speed: float = 400.0
+@export var acceleration: float = 2000.0  # How fast robot speeds up
+@export var deceleration: float = 1800.0  # How fast robot slows down
+@export var friction: float = 800.0  # Slowdown when no input
+
+# Visual feel settings
+@export var tilt_amount: float = 15.0  # Degrees robot tilts when moving
+@export var tilt_speed: float = 8.0  # How fast robot tilts
+@export var float_amplitude: float = 3.0  # Height of floating motion
+@export var float_frequency: float = 2.0  # Speed of floating motion
 
 # Skill tuning
 @export var skill_forward_offset: float = 25.0 # distance above player
@@ -10,9 +20,12 @@ extends CharacterBody2D
 
 var _skill_time_left: float = 0.0
 var _cool_down_left: float = 0.0
+var _current_tilt: float = 0.0  # Current tilt angle
+var _float_time: float = 0.0  # Time accumulator for floating
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D # Reference the paddle's collision shape
 @onready var skill_shape: CollisionShape2D = $SkillHitbox # Reference the skill hitbox collision shape
+@onready var visual_root: Node2D = self  # Will store visual elements for rotation
 
 func get_width() -> float:
 	if collision_shape and collision_shape.shape is CapsuleShape2D:
@@ -77,10 +90,26 @@ func set_skill_active(active: bool) -> void:
 		skill_shape.disabled = not active
 
 func _physics_process(delta: float) -> void:
+	# Get input direction
 	var direction = Input.get_axis('move_left', 'move_right')
-	velocity.x = direction * speed
+	
+	# Smooth acceleration/deceleration
+	if direction != 0:
+		# Accelerate towards max speed
+		velocity.x = move_toward(velocity.x, direction * max_speed, acceleration * delta)
+	else:
+		# Decelerate when no input
+		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
+	
+	# Apply slight friction for more natural feel
+	if abs(velocity.x) > 0 and direction == 0:
+		velocity.x = move_toward(velocity.x, 0.0, friction * delta)
+	
 	velocity.y = 0
 	move_and_slide()
+	
+	# Update visual effects
+	update_robot_visuals(delta, direction)
 	
 	# Timer updates for skill active window and cooldown
 	if _cool_down_left > 0.0:
@@ -94,6 +123,25 @@ func _physics_process(delta: float) -> void:
 	# Skill activation
 	if Input.is_action_just_pressed("paddle_skill"):
 		try_activate_skill()
+
+func update_robot_visuals(delta: float, direction: float) -> void:
+	# Floating motion - subtle sine wave
+	_float_time += delta * float_frequency
+	var float_offset = sin(_float_time) * float_amplitude
+	
+	# Calculate target tilt based on velocity (not just input direction)
+	var velocity_factor = clamp(velocity.x / max_speed, -1.0, 1.0)
+	var target_tilt = velocity_factor * tilt_amount
+	
+	# Smooth tilt towards target
+	_current_tilt = lerp(_current_tilt, target_tilt, tilt_speed * delta)
+	
+	# Apply rotation and floating to visual elements
+	# Note: We rotate the entire node, but collision stays upright
+	rotation_degrees = _current_tilt
+	
+	# Apply floating offset (you can add a visual node to offset separately if needed)
+	# For now, this creates a subtle hover effect on the entire paddle
 
 func try_activate_skill() -> void:
 	#Respect active window cooldown

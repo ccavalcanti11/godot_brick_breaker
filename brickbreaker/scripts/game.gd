@@ -12,7 +12,6 @@ var ball_on_paddle: bool = true
 var bricks_node: Node = null
 
 func _ready() -> void:
-	
 	load_level(GameManager.current_level)
 
 	reset_ball()
@@ -52,16 +51,22 @@ func load_level(level_number: int) -> void:
 		print("Connected DeathZone signal")
 	
 	
-func _process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# Update ball position in physics_process to sync with paddle movement
 	if ball_on_paddle:
 		var ball = ball_container.get_child(0)
 		if ball:
-			ball.position = paddle.position + Vector2(0, -60)
-	# Launch the ball:
-		if Input.is_action_just_pressed("launch_ball"):
-			ball_on_paddle = false
-			ball.launch(Vector2.UP)
-	
+			# Position ball relative to paddle's global position
+			ball.global_position = Vector2(paddle.global_position.x, paddle.global_position.y - 60)
+			ball.linear_velocity = Vector2.ZERO # Clear any residual velocity
+			
+			# Check for launch input
+			if Input.is_action_just_pressed("launch_ball"):
+				ball_on_paddle = false
+				ball.freeze = false
+				ball.launch(Vector2.UP)
+
+func _process(delta: float) -> void:
 	# Handle Pausing
 	if Input.is_action_just_pressed("pause"):
 		if not get_tree().paused:
@@ -105,13 +110,23 @@ func count_remaining_bricks() -> int:
 	
 
 func reset_ball():
+	# Remove old ball immediately (not deferred)
 	for child in ball_container.get_children():
-		child.queue_free()
+		child.free() # Use free() instead of queue_free() for immediate removal
 	
 	# Create new ball
 	var ball = BallScene.instantiate()
 	ball_container.add_child(ball)
 	ball_on_paddle = true
+	
+	# Wait for the ball to be fully in the scene tree
+	await get_tree().process_frame
+	
+	# Now set ball position and freeze it
+	if ball and is_instance_valid(ball):
+		ball.freeze = true
+		ball.global_position = Vector2(paddle.global_position.x, paddle.global_position.y - 60)
+		ball.linear_velocity = Vector2.ZERO
 
 func _on_ball_lost():
 	print("ball lost signal received")

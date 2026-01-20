@@ -7,5 +7,4 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("ball"):
 		print(" body is ball!")
 		ball_lost.emit()
-		body.queue_free()
 	
