@@ -8,7 +8,7 @@ This document breaks down the MVP development into actionable tasks organized by
 ---
 
 ## Phase 1: Robot Visual Identity & Special Bar (Week 1-2)
-**Goal:** Transform the player character into a robot with a charging special attack system
+**Goal:** Transform the player character into a robot with a charging weapon hit attack system
 
 ### 1.1 Robot Sprite Implementation
 **Priority:** HIGH | **Effort:** 4-6 hours
@@ -124,7 +124,7 @@ This document breaks down the MVP development into actionable tasks organized by
           collider.play_hit_animation()  # Trigger player visual feedback
   ```
 
-- [ ] **Connect special bar to player skill**
+- [ ] **Connect special bar to player weapon hit**
   - Modify [scripts/player.gd](brickbreaker/scripts/player.gd)
   ```gdscript
   @onready var special_bar = get_node("/root/Game/SpecialBar")  # Adjust path

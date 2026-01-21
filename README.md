@@ -54,7 +54,7 @@ If you're new to Godot, this project doubles as a tutorial. Follow the guide in 
 - **Godot-Specific Features**: Utilizes signals for event handling (e.g., ball_brick_collision signal), AnimationPlayer for effects, and TileMap for potential background elements.
 - **Audio and Visuals**: Basic sound effects for bounces, breaks, and menus (import your own .wav files). Simple sprites or shapes for assets—easily replaceable with custom art.
 - **Performance Optimizations**: Node pooling for bricks to reduce instantiation overhead. Supports resolutions from 800x600 to full HD.
-- **Extensibility**: Modular code allows easy additions like power-ups (e.g., multi-ball, player enlargement) or enemy AI.
+- **Extensibility**: Modular code allows easy additions like power-ups (e.g., multi-ball, player size changes), different weapons, or enemy AI.
 
 ### **Pros of Playing/Developing This Game**:
 
@@ -147,6 +147,7 @@ Getting started is straightforward. This project is built with Godot 4.x, so ens
 
 
    - **Launch Ball**: Spacebar to release the ball at the start (or auto-launch after reset).
+   - **Weapon Hit**: F key to activate weapon hit attack.
    - **Pause**: Escape key to bring up the pause menu.
    - **Quit**: Alt+F4 or via menu.
    - (Optional: Mouse mode—click and drag player for alternative control.)

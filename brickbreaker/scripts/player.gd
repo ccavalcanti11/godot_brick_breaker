@@ -12,19 +12,19 @@ extends CharacterBody2D
 @export var float_amplitude: float = 3.0  # Height of floating motion
 @export var float_frequency: float = 2.0  # Speed of floating motion
 
-# Skill tuning
-@export var skill_forward_offset: float = 25.0 # distance above player
-@export var skill_thickness: float = 6.0 # height of the hitzone shape
-@export var skill_duration: float = 0.18 # seconds the hit will be active
-@export var skill_cooldown: float = 0.65 # seconds before the hit can be triggered again
+# Weapon hit tuning
+@export var weapon_forward_offset: float = 25.0 # distance above player
+@export var weapon_thickness: float = 6.0 # height of the hitzone shape
+@export var hit_duration: float = 0.18 # seconds the hit will be active
+@export var hit_cooldown: float = 0.65 # seconds before the hit can be triggered again
 
-var _skill_time_left: float = 0.0
-var _cool_down_left: float = 0.0
+var _hit_time_left: float = 0.0
+var _cooldown_left: float = 0.0
 var _current_tilt: float = 0.0  # Current tilt angle
 var _float_time: float = 0.0  # Time accumulator for floating
 
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D # Reference the paddle's collision shape
-@onready var skill_shape: CollisionShape2D = $SkillHitbox # Reference the skill hitbox collision shape
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D # Reference the player's collision shape
+@onready var weapon_hitbox: CollisionShape2D = $WeaponHitbox # Reference the weapon hitbox collision shape
 @onready var visual_root: Node2D = self  # Will store visual elements for rotation
 
 func get_width() -> float:
@@ -34,21 +34,21 @@ func get_width() -> float:
 	return 0.0 # Fallback in case the shape is not set
 
 func _ready():
-	setup_skill_hitbox()
-	set_skill_active(false)
+	setup_weapon_hitbox()
+	set_weapon_active(false)
 
-func setup_skill_hitbox() -> void:
+func setup_weapon_hitbox() -> void:
 	# Ensure the main shape is a capsule (needed to compute top edge and width)
 	var player_cap := collision_shape.shape as CapsuleShape2D
 	if player_cap == null:
-		push_warning("Players CollisionShape2D should be CapsuleShape2D for skill positioning.")
+		push_warning("Players CollisionShape2D should be CapsuleShape2D for weapon positioning.")
 		return
 	
-	# Create the skill capsule
+	# Create the weapon capsule
 	var cap := CapsuleShape2D.new()
 	# Thickness controls the capsule's vertical thickness when horizontal:
 	# thickness = 2 * radius => radius = thickness / 2
-	cap.radius = max(skill_thickness * 0.5, 0.0)
+	cap.radius = max(weapon_thickness * 0.5, 0.0)
 	
 	# Make the skill capsule span the player's width:
 	# When rotated 90., the horizontal length of the capsule is (height + 2 * radius)
@@ -56,15 +56,15 @@ func setup_skill_hitbox() -> void:
 	var player_width := get_width() # 2 * player_cap.radius
 	cap.height = max((16.0 * cap.radius), 0.0) # if <= 0, it becomes a circle
 	
-	skill_shape.shape = cap
+	weapon_hitbox.shape = cap
 	
 	# Rotate 90. so the capsule becomes horizontal (thin bar above the player)
-	skill_shape.rotation_degrees = 90.0
+	weapon_hitbox.rotation_degrees = 90.0
 	
 	# Position it above the top edge
-	update_skill_hitbox_transform()
+	update_weapon_hitbox_transform()
 
-func update_skill_hitbox_transform() -> void:
+func update_weapon_hitbox_transform() -> void:
 	var player_cap := collision_shape.shape as CapsuleShape2D
 	if player_cap == null:
 		return
@@ -75,19 +75,19 @@ func update_skill_hitbox_transform() -> void:
 	# Player is centered at its origin; top edge is at -total_height / 2
 	var top_edge := -total_height * 0.5
 	
-	# The skill capsule's vertical thickness (in world y) is it diameter (2*radius)
-	var half_thickness := skill_thickness * 0.5
+	# The weapon capsule's vertical thickness (in world y) is it diameter (2*radius)
+	var half_thickness := weapon_thickness * 0.5
 	
-	# Center the skill capsule so its bottom edge is offset above the player's top edge
-	var y := top_edge - skill_forward_offset - half_thickness
+	# Center the weapon capsule so its bottom edge is offset above the player's top edge
+	var y := top_edge - weapon_forward_offset - half_thickness
 	
 	# Keep centered in x
-	skill_shape.position = Vector2(0.0, y)
+	weapon_hitbox.position = Vector2(0.0, y)
 	
 
-func set_skill_active(active: bool) -> void:
-	if skill_shape:
-		skill_shape.disabled = not active
+func set_weapon_active(active: bool) -> void:
+	if weapon_hitbox:
+		weapon_hitbox.disabled = not active
 
 func _physics_process(delta: float) -> void:
 	# Get input direction
@@ -111,18 +111,18 @@ func _physics_process(delta: float) -> void:
 	# Update visual effects
 	update_robot_visuals(delta, direction)
 	
-	# Timer updates for skill active window and cooldown
-	if _cool_down_left > 0.0:
-		_cool_down_left = max(0.0, _cool_down_left - delta)
+	# Timer updates for weapon hit active window and cooldown
+	if _cooldown_left > 0.0:
+		_cooldown_left = max(0.0, _cooldown_left - delta)
 	
-	if _skill_time_left > 0.0:
-		_skill_time_left  = max(0.0, _skill_time_left - delta)
-		if _skill_time_left <= 0.0:
-			set_skill_active(false)
+	if _hit_time_left > 0.0:
+		_hit_time_left  = max(0.0, _hit_time_left - delta)
+		if _hit_time_left <= 0.0:
+			set_weapon_active(false)
 	
-	# Skill activation
-	if Input.is_action_just_pressed("player_skill"):
-		try_activate_skill()
+	# Weapon hit activation
+	if Input.is_action_just_pressed("player_hit"):
+		try_activate_hit()
 
 func update_robot_visuals(delta: float, direction: float) -> void:
 	# Floating motion - subtle sine wave
@@ -143,15 +143,15 @@ func update_robot_visuals(delta: float, direction: float) -> void:
 	# Apply floating offset (you can add a visual node to offset separately if needed)
 	# For now, this creates a subtle hover effect on the entire paddle
 
-func try_activate_skill() -> void:
+func try_activate_hit() -> void:
 	#Respect active window cooldown
-	if _cool_down_left > 0.0 or _skill_time_left > 0.0:
+	if _cooldown_left > 0.0 or _hit_time_left > 0.0:
 		return
 	
 	# Ensure position is correct just before activation
-	update_skill_hitbox_transform()
+	update_weapon_hitbox_transform()
 	$AnimatedSprite2D.play("attack")
 	
-	set_skill_active(true)
-	_skill_time_left = skill_duration
-	_cool_down_left = skill_cooldown
+	set_weapon_active(true)
+	_hit_time_left = hit_duration
+	_cooldown_left = hit_cooldown

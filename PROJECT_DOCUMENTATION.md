@@ -94,23 +94,23 @@ brickbreaker/
 
 **Type:** CharacterBody2D
 
-**Purpose:** Player-controlled robot character with horizontal movement and special skill attack.
+**Purpose:** Player-controlled robot character with horizontal movement and weapon hit attack.
 
 **Movement System:**
 - Keyboard-based left/right movement (400 speed)
 - Uses Godot's `move_and_slide()` for smooth physics
 
-**Special Skill Attack:**
-A horizontal hitbox appears above the player character for a short duration when activated.
+**Weapon Hit Attack:**
+A horizontal hitbox appears above the player character for a short duration when the player presses the hit button. This allows the robot to attack the ball with its equipped weapon.
 
-**Skill Parameters:**
-- `skill_forward_offset`: Distance above player (25.0)
-- `skill_thickness`: Hitbox height (6.0)
-- `skill_duration`: How long skill is active (0.18s)
-- `skill_cooldown`: Time before next use (0.65s)
+**Weapon Hit Parameters:**
+- `weapon_forward_offset`: Distance above player (25.0)
+- `weapon_thickness`: Hitbox height (6.0)
+- `hit_duration`: How long hit is active (0.18s)
+- `hit_cooldown`: Time before next use (0.65s)
 
-**Skill System:**
-- Activated with "player_skill" input action
+**Weapon Hit System:**
+- Activated with "player_hit" input action (F key)
 - Creates a capsule-shaped hitbox spanning player width
 - Positioned above player, rotated 90 degrees to be horizontal
 - Triggers attack animation on AnimatedSprite2D
@@ -118,8 +118,8 @@ A horizontal hitbox appears above the player character for a short duration when
 
 **Key Methods:**
 - `get_width()`: Returns player width for ball collision calculations
-- `setup_skill_hitbox()`: Configures the skill attack hitbox geometry
-- `try_activate_skill()`: Handles skill activation with cooldown check
+- `setup_weapon_hitbox()`: Configures the weapon attack hitbox geometry
+- `try_activate_hit()`: Handles weapon hit activation with cooldown check
 
 ---
 
@@ -336,7 +336,7 @@ Game → Pause Action → Game.paused = true → Pause Menu spawns → Resume/Qu
 - Level selection screen
 
 ### ✅ Advanced Features
-- Player special skill attack (timed hitbox above player)
+- Player weapon hit attack (timed hitbox above player for weapon strikes)
 - Ball horizontal lock prevention (minimum vertical speed)
 - Persistent game state via GameManager singleton
 
@@ -349,7 +349,7 @@ Your project.godot should define these input actions:
 - `move_right`: Move player right
 - `launch_ball`: Launch ball from player
 - `pause`: Pause the game
-- `player_skill`: Activate player special skill
+- `player_hit`: Activate player weapon hit (F key)
 
 ---
 
@@ -357,7 +357,7 @@ Your project.godot should define these input actions:
 
 1. **Level Completion**: Code to load next level is commented out in [game.gd](brickbreaker/scripts/game.gd#L92-L94)
 2. **Brick Counting**: `count_remaining_bricks()` returns `count - 1`, might cause off-by-one errors
-3. **Skill Functionality**: Player skill hitbox is set up but collision response isn't implemented
+3. **Hit Functionality**: Player weapon hitbox is set up but collision response with bricks isn't fully implemented
 4. **Sound Integration**: Sound files exist but no code references them yet
 5. **Multiple Brick Types**: PurpleBrick scene exists but behavior differences unclear
 

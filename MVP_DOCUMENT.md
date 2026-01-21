@@ -6,7 +6,7 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 ---
 
 ## MVP Goal
-**Create a playable single-level brick breaker where the player controls a robot character with a special attack bar that charges through gameplay, demonstrating the core robot identity and skill-based gameplay loop.**
+**Create a playable single-level brick breaker where the player controls a robot character with a special attack bar that charges through gameplay, allowing the robot to hit the ball with its equipped weapon.**
 
 ---
 
@@ -32,8 +32,8 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 - ✓ Scene transitions
 
 ### Special Mechanics (Partial)
-- ✓ Player skill attack system (hitbox above player)
-- ⚠️ Skill cooldown system implemented but not visually represented
+- ✓ Player weapon hit attack system (hitbox above player)
+- ⚠️ Hit cooldown system implemented but not visually represented
 
 ---
 
@@ -53,28 +53,28 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 - [ ] Fill bar when player hits the ball (not from brick destruction)
 - [ ] Bar fills progressively: each hit adds X% (balance to ~10-15 hits)
 - [ ] Visual and audio feedback when bar reaches 100%
-- [ ] Connect special bar to existing skill attack system
+- [ ] Connect special bar to existing weapon hit attack system
 - [ ] Special attack depletes bar back to 0%
-- [ ] Visual effect when special is active (glow, particles, color change)
+- [ ] Visual effect when weapon hit is active (glow, particles, color change)
 
 #### 1.3 Polish Existing Mechanics
 - [ ] Add sound effects for:
   - Ball hitting player
   - Ball hitting walls
   - Brick destruction (already have assets)
-  - Special attack activation
-  - Special attack hitting bricks
+  - Weapon hit activation
+  - Weapon hit striking bricks
 - [ ] Add particle effects:
   - Brick destruction
-  - Special attack activation
+  - Weapon hit activation
   - Ball trail (optional, subtle)
-- [ ] Screen shake on special attack
+- [ ] Screen shake on weapon hit
 - [ ] Camera juice (slight zoom/shake on satisfying moments)
 
 #### 1.4 Tutorial/First-Time Experience
 - [ ] Simple text overlay explaining controls:
   - Move: Arrow Keys / A-D
-  - Special Attack: [Key]
+  - Weapon Hit: F
   - Pause: ESC
 - [ ] Visual indicator showing how special bar fills (first time only)
 - [ ] Clear "Press to Launch Ball" prompt
@@ -106,14 +106,14 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 - [ ] Tune special bar fill rate (too fast = boring, too slow = frustrating)
 - [ ] Adjust ball speed progression (currently 5s intervals, is this good?)
 - [ ] Review player speed (400 - feels good?)
-- [ ] Balance special attack power/duration/cooldown
+- [ ] Balance weapon hit attack power/duration/cooldown
 - [ ] Test lives count (3 is standard, but is it right for this game?)
 
 #### 3.2 Feedback & Juice
 - [ ] Satisfying brick break animations
 - [ ] Combo system? (breaking bricks in quick succession)
 - [ ] Score pop-ups when breaking bricks
-- [ ] Better visual distinction between normal and special attacks
+- [ ] Better visual distinction between normal and weapon hit attacks
 
 ---
 
@@ -149,13 +149,13 @@ Once the MVP is validated, these systems can be designed around a proven foundat
 ### MVP is successful if:
 1. **Core loop is fun:** Players want to replay levels to improve scores/time
 2. **Robot identity is clear:** Player feels like they're controlling a robot, not a generic character
-3. **Special attack is satisfying:** Players actively want to charge and use the special
+3. **Weapon hit is satisfying:** Players actively want to charge and use the weapon hit
 4. **Technical foundation is solid:** No major bugs, smooth performance
 5. **Scope is proven:** 3-5 levels demonstrate the game can scale
 
 ### Metrics to Watch
 - Time to complete each level (should feel good, not tedious)
-- How often players use special attack (if never = too hard to charge, if constantly = too easy)
+- How often players use weapon hit (if never = too hard to charge, if constantly = too easy)
 - Player retention per level (drop-off indicates difficulty/fun issues)
 
 ---
