@@ -1,7 +1,7 @@
 # Godot Brick Breaker - Project Documentation
 
 ## Project Overview
-This is a classic brick breaker game (Breakout-style) built in Godot Engine. The player controls a paddle to bounce a ball and destroy bricks across multiple levels. The game includes features like lives system, scoring, level progression, pause functionality, and a special paddle skill attack.
+This is a classic brick breaker game (Breakout-style) built in Godot Engine. The player controls a robot character to bounce a ball and destroy bricks across multiple levels. The game includes features like lives system, scoring, level progression, pause functionality, and a special player skill attack.
 
 ---
 
@@ -11,7 +11,7 @@ This is a classic brick breaker game (Breakout-style) built in Godot Engine. The
 brickbreaker/
 ├── assets/
 │   ├── sounds/          # Sound effects (brick breaks, BGM)
-│   └── sprites/         # Game sprites (ball, bricks, paddle, robot animations)
+│   └── sprites/         # Game sprites (ball, bricks, player, robot animations)
 ├── scenes/              # Godot scene files (.tscn)
 │   ├── levels/          # Individual level scenes
 │   └── [UI and gameplay scenes]
@@ -63,10 +63,10 @@ brickbreaker/
   - Increases by 30 per interval
   - Max speed caps at 800
   
-- **Smart Paddle Collision**:
-  - Factors in paddle momentum (50% of paddle velocity affects ball)
+- **Smart Player Collision**:
+  - Factors in player momentum (50% of player velocity affects ball)
   - Angular control based on hit position (hitting edges changes trajectory more)
-  - Uses paddle's width to calculate hit offset
+  - Uses player's width to calculate hit offset
   
 - **Brick Collision Detection**:
   - Detects collisions with "Brick", "PurpleBrick", or any object with "destroyed" signal
@@ -89,35 +89,35 @@ brickbreaker/
 
 ---
 
-### 3. Paddle Control
-**File:** [scripts/paddle.gd](brickbreaker/scripts/paddle.gd)
+### 3. Player Control
+**File:** [scripts/player.gd](brickbreaker/scripts/player.gd)
 
 **Type:** CharacterBody2D
 
-**Purpose:** Player-controlled paddle with horizontal movement and special skill attack.
+**Purpose:** Player-controlled robot character with horizontal movement and special skill attack.
 
 **Movement System:**
 - Keyboard-based left/right movement (400 speed)
 - Uses Godot's `move_and_slide()` for smooth physics
 
 **Special Skill Attack:**
-A horizontal hitbox appears above the paddle for a short duration when activated.
+A horizontal hitbox appears above the player character for a short duration when activated.
 
 **Skill Parameters:**
-- `skill_forward_offset`: Distance above paddle (25.0)
+- `skill_forward_offset`: Distance above player (25.0)
 - `skill_thickness`: Hitbox height (6.0)
 - `skill_duration`: How long skill is active (0.18s)
 - `skill_cooldown`: Time before next use (0.65s)
 
 **Skill System:**
-- Activated with "paddle_skill" input action
-- Creates a capsule-shaped hitbox spanning paddle width
-- Positioned above paddle, rotated 90 degrees to be horizontal
+- Activated with "player_skill" input action
+- Creates a capsule-shaped hitbox spanning player width
+- Positioned above player, rotated 90 degrees to be horizontal
 - Triggers attack animation on AnimatedSprite2D
 - Respects cooldown and active windows
 
 **Key Methods:**
-- `get_width()`: Returns paddle width for ball collision calculations
+- `get_width()`: Returns player width for ball collision calculations
 - `setup_skill_hitbox()`: Configures the skill attack hitbox geometry
 - `try_activate_skill()`: Handles skill activation with cooldown check
 
@@ -153,7 +153,7 @@ A horizontal hitbox appears above the paddle for a short duration when activated
 
 **Type:** Area2D
 
-**Purpose:** Detects when ball falls below the paddle.
+**Purpose:** Detects when ball falls below the player character.
 
 **Features:**
 - Detects bodies entering the zone
@@ -176,7 +176,7 @@ A horizontal hitbox appears above the paddle for a short duration when activated
 **Purpose:** Main gameplay scene that orchestrates all game elements.
 
 **Key Components:**
-- Paddle reference
+- Player reference
 - Ball container (holds ball instances)
 - Level container (holds loaded level scenes)
 - UI overlay
@@ -188,8 +188,8 @@ A horizontal hitbox appears above the paddle for a short duration when activated
    - Connects GameManager signals to UI
    - Updates UI with current stats
 
-2. **Ball on Paddle State**:
-   - Ball sticks to paddle position (60 units above)
+2. **Ball on Player State**:
+   - Ball sticks to player position (60 units above)
    - Launches when "launch_ball" action pressed
    - Launches upward initially
 
@@ -211,7 +211,7 @@ A horizontal hitbox appears above the paddle for a short duration when activated
 **Key Methods:**
 - `connect_bricks(bricks)`: Recursively finds and connects all brick destroyed signals
 - `count_remaining_bricks()`: Counts bricks in level (returns count - 1)
-- `reset_ball()`: Destroys old ball, creates new one, returns to paddle
+- `reset_ball()`: Destroys old ball, creates new one, returns to player
 
 **Note:** Level completion logic is present but commented out (lines checking for 0 remaining bricks).
 
@@ -297,10 +297,10 @@ Main Menu → Start Button → GameManager.reset_game() → GameManager.load_lev
 
 ### Gameplay Loop
 ```
-1. Ball spawns on paddle
-2. Player moves paddle (left/right)
+1. Ball spawns on player
+2. Player moves character (left/right)
 3. Player launches ball (spacebar/action)
-4. Ball bounces off walls, paddle, and bricks
+4. Ball bounces off walls, player, and bricks
 5. Bricks destroyed → +100 points
 6. Ball falls → -1 life → reset ball
 7. All bricks destroyed → next level (currently disabled)
@@ -318,8 +318,8 @@ Game → Pause Action → Game.paused = true → Pause Menu spawns → Resume/Qu
 
 ### ✅ Core Mechanics
 - Physics-based ball movement with collision detection
-- Paddle control with momentum transfer to ball
-- Angular ball control based on paddle hit position
+- Player control with momentum transfer to ball
+- Angular ball control based on player hit position
 - Health-based brick destruction
 - Lives system (3 lives)
 - Score tracking (+100 per brick)
@@ -336,7 +336,7 @@ Game → Pause Action → Game.paused = true → Pause Menu spawns → Resume/Qu
 - Level selection screen
 
 ### ✅ Advanced Features
-- Paddle special skill attack (timed hitbox above paddle)
+- Player special skill attack (timed hitbox above player)
 - Ball horizontal lock prevention (minimum vertical speed)
 - Persistent game state via GameManager singleton
 
@@ -345,11 +345,11 @@ Game → Pause Action → Game.paused = true → Pause Menu spawns → Resume/Qu
 ## Input Actions Required
 
 Your project.godot should define these input actions:
-- `move_left`: Move paddle left
-- `move_right`: Move paddle right
-- `launch_ball`: Launch ball from paddle
+- `move_left`: Move player left
+- `move_right`: Move player right
+- `launch_ball`: Launch ball from player
 - `pause`: Pause the game
-- `paddle_skill`: Activate paddle special skill
+- `player_skill`: Activate player special skill
 
 ---
 
@@ -357,7 +357,7 @@ Your project.godot should define these input actions:
 
 1. **Level Completion**: Code to load next level is commented out in [game.gd](brickbreaker/scripts/game.gd#L92-L94)
 2. **Brick Counting**: `count_remaining_bricks()` returns `count - 1`, might cause off-by-one errors
-3. **Skill Functionality**: Paddle skill hitbox is set up but collision response isn't implemented
+3. **Skill Functionality**: Player skill hitbox is set up but collision response isn't implemented
 4. **Sound Integration**: Sound files exist but no code references them yet
 5. **Multiple Brick Types**: PurpleBrick scene exists but behavior differences unclear
 
@@ -381,8 +381,8 @@ Your project.godot should define these input actions:
 ### Implementing Power-ups
 - Create Area2D scenes for power-up items
 - Spawn from destroyed bricks
-- Detect paddle collision
-- Apply effects (multi-ball, bigger paddle, slower speed, etc.)
+- Detect player collision
+- Apply effects (multi-ball, bigger player, slower speed, etc.)
 
 ### Adding Sound
 - Load audio files as AudioStreamPlayer nodes
@@ -416,12 +416,12 @@ GameManager acts as an autoload singleton, providing global access to game state
 
 1. **Enable Level Progression**: Uncomment and fix level completion code
 2. **Fix Brick Counter**: Debug the `-1` in `count_remaining_bricks()`
-3. **Implement Skill Effect**: Make paddle skill actually affect ball/bricks
+3. **Implement Skill Effect**: Make player skill actually affect ball/bricks
 4. **Add Sound Effects**: Integrate the existing sound files
 5. **Create More Levels**: Design levels 2-5 with increasing difficulty
 6. **Add Visual Feedback**: Particle effects for brick destruction
 7. **High Score System**: Save best score to disk
-8. **Mobile Controls**: Add touch/mouse controls for paddle
+8. **Mobile Controls**: Add touch/mouse controls for player
 
 ---
 

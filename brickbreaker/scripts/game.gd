@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var paddle = $Paddle
+@onready var player = $Player
 @onready var ball_container = $BallContainer
 @onready var level_container = $LevelContainer
 @onready var ui = $UI
@@ -8,7 +8,7 @@ extends Node2D
 const BallScene = preload("res://scenes/Ball.tscn")
 const PauseMenuScene = preload("res://scenes/PauseMenu.tscn")
 
-var ball_on_paddle: bool = true
+var ball_on_player: bool = true
 var bricks_node: Node = null
 
 func _ready() -> void:
@@ -52,17 +52,17 @@ func load_level(level_number: int) -> void:
 	
 	
 func _physics_process(delta: float) -> void:
-	# Update ball position in physics_process to sync with paddle movement
-	if ball_on_paddle:
+	# Update ball position in physics_process to sync with player movement
+	if ball_on_player:
 		var ball = ball_container.get_child(0)
 		if ball:
-			# Position ball relative to paddle's global position
-			ball.global_position = Vector2(paddle.global_position.x, paddle.global_position.y - 60)
+			# Position ball relative to player's global position
+			ball.global_position = Vector2(player.global_position.x, player.global_position.y - 60)
 			ball.linear_velocity = Vector2.ZERO # Clear any residual velocity
 			
 			# Check for launch input
 			if Input.is_action_just_pressed("launch_ball"):
-				ball_on_paddle = false
+				ball_on_player = false
 				ball.freeze = false
 				ball.launch(Vector2.UP)
 
@@ -117,7 +117,7 @@ func reset_ball():
 	# Create new ball
 	var ball = BallScene.instantiate()
 	ball_container.add_child(ball)
-	ball_on_paddle = true
+	ball_on_player = true
 	
 	# Wait for the ball to be fully in the scene tree
 	await get_tree().process_frame
@@ -125,7 +125,7 @@ func reset_ball():
 	# Now set ball position and freeze it
 	if ball and is_instance_valid(ball):
 		ball.freeze = true
-		ball.global_position = Vector2(paddle.global_position.x, paddle.global_position.y - 60)
+		ball.global_position = Vector2(player.global_position.x, player.global_position.y - 60)
 		ball.linear_velocity = Vector2.ZERO
 
 func _on_ball_lost():

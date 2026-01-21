@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://bgocu3t0prux6"]
 
-[ext_resource type="Script" uid="uid://b0wmc6px7drj4" path="res://scripts/paddle.gd" id="1_ry5ju"]
+[ext_resource type="Script" uid="uid://b0wmc6px7drj4" path="res://scripts/player.gd" id="1_ry5ju"]
 [ext_resource type="Texture2D" uid="uid://boltlmvbxgi0i" path="res://assets/sprites/robot-attack-anim.png" id="2_jlx5f"]
 [ext_resource type="Texture2D" uid="uid://clttvxqp3qa32" path="res://assets/sprites/robot-idle-anim-3.png" id="3_jlx5f"]
 

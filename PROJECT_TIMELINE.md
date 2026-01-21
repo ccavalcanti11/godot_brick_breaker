@@ -8,21 +8,21 @@ This document breaks down the MVP development into actionable tasks organized by
 ---
 
 ## Phase 1: Robot Visual Identity & Special Bar (Week 1-2)
-**Goal:** Transform the paddle into a robot with a charging special attack system
+**Goal:** Transform the player character into a robot with a charging special attack system
 
 ### 1.1 Robot Sprite Implementation
 **Priority:** HIGH | **Effort:** 4-6 hours
 
 #### Tasks:
-- [ ] **Replace paddle sprite with robot**
-  - Location: [scenes/Paddle.tscn](brickbreaker/scenes/Paddle.tscn)
+- [ ] **Replace player sprite with robot**
+  - Location: [scenes/Player.tscn](brickbreaker/scenes/Player.tscn)
   - Use: `robot-idle-anim-2.png` or `robot-idle-anim-3.png`
   - Ensure sprite is properly centered and scaled
   - Update collision shape if needed (robot might have different dimensions)
 
 - [ ] **Add AnimatedSprite2D for robot animations**
   ```gdscript
-  # In paddle.gd
+  # In player.gd
   @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
   
   # Create animations in AnimatedSprite2D:
@@ -33,7 +33,7 @@ This document breaks down the MVP development into actionable tasks organized by
 
 - [ ] **Implement animation state system**
   ```gdscript
-  # In paddle.gd, add:
+  # In player.gd, add:
   enum AnimState { IDLE, HIT, SPECIAL }
   var current_anim_state = AnimState.IDLE
   
@@ -48,7 +48,7 @@ This document breaks down the MVP development into actionable tasks organized by
   ```
 
 - [ ] **Add visual feedback on ball hit**
-  - Detect when ball collides with paddle (already in ball.gd)
+  - Detect when ball collides with player (already in ball.gd)
   - Trigger animation or visual effect (flash, slight scale pulse)
   - Consider adding ModulateEffect for brief color flash
 
@@ -114,18 +114,18 @@ This document breaks down the MVP development into actionable tasks organized by
   # Near top of ball.gd:
   @onready var special_bar = get_node("/root/Game/SpecialBar")  # Adjust path
   
-  # In _physics_process where paddle collision is detected:
-  if collider.name == "Paddle":
-      # ... existing paddle collision code ...
+  # In _physics_process where player collision is detected:
+  if collider.name == "Player":
+      # ... existing player collision code ...
       
       # Add charge to special bar
       if special_bar:
           special_bar.add_charge(special_bar.charge_per_hit)
-          collider.play_hit_animation()  # Trigger paddle visual feedback
+          collider.play_hit_animation()  # Trigger player visual feedback
   ```
 
-- [ ] **Connect special bar to paddle skill**
-  - Modify [scripts/paddle.gd](brickbreaker/scripts/paddle.gd)
+- [ ] **Connect special bar to player skill**
+  - Modify [scripts/player.gd](brickbreaker/scripts/player.gd)
   ```gdscript
   @onready var special_bar = get_node("/root/Game/SpecialBar")  # Adjust path
   
@@ -259,12 +259,12 @@ This document breaks down the MVP development into actionable tasks organized by
 - [ ] **Connect audio to game events**
   ```gdscript
   # In ball.gd:
-  @onready var paddle_hit_sound = $PaddleHitSound
+  @onready var player_hit_sound = $PlayerHitSound
   @onready var wall_hit_sound = $WallHitSound
   
   # In collision detection:
-  if collider.name == "Paddle":
-      paddle_hit_sound.play()
+  if collider.name == "Player":
+      player_hit_sound.play()
   elif collider.is_in_group("walls"):
       wall_hit_sound.play()
   
@@ -281,7 +281,7 @@ This document breaks down the MVP development into actionable tasks organized by
   func bar_filled():
       $BarFullSound.play()
   
-  # In paddle.gd:
+  # In player.gd:
   func trigger_skill():
       $SpecialActivateSound.play()
   ```

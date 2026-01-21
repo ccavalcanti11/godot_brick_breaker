@@ -43,19 +43,19 @@ func _on_body_entered(body: Node) -> void:
 	if body is CharacterBody2D or body is StaticBody2D or body is RigidBody2D:
 		print("Ball collided with: ", body.name)
 		
-		# Check if the ball collided with the paddle
-		if body.name == "Paddle":
-			#1. Factor in paddle momentum
-			var paddle_velocity = body.velocity.x
-			linear_velocity.x += paddle_velocity * 0.5 # Paddle's velocity affects ball momentum
+		# Check if the ball collided with the player
+		if body.name == "Player":
+			#1. Factor in player momentum
+			var player_velocity = body.velocity.x
+			linear_velocity.x += player_velocity * 0.5 # Player's velocity affects ball momentum
 			
 			#2. Angular control (based on hit position)
-			var paddle_width = body.get_width() # Use the paddle's get_width() method
-			var offset = (global_position.x - body.global_position.x) / (paddle_width / 2)
+			var player_width = body.get_width() # Use the player's get_width() method
+			var offset = (global_position.x - body.global_position.x) / (player_width / 2)
 			offset = clamp(offset, -1.0, 1.0)  # Clamp to prevent extreme angles
 			linear_velocity.x += offset * speed * 0.25 # Affect trajectory based on hit location
 			
-			# Ensure ball bounces away from paddle (prevent sticking)
+			# Ensure ball bounces away from player (prevent sticking)
 			if linear_velocity.y > 0:  # Ball is moving down but should bounce up
 				linear_velocity.y = -abs(linear_velocity.y)
 		

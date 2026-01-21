@@ -121,7 +121,7 @@ func _physics_process(delta: float) -> void:
 			set_skill_active(false)
 	
 	# Skill activation
-	if Input.is_action_just_pressed("paddle_skill"):
+	if Input.is_action_just_pressed("player_skill"):
 		try_activate_skill()
 
 func update_robot_visuals(delta: float, direction: float) -> void:

@@ -6,7 +6,7 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 ---
 
 ## MVP Goal
-**Create a playable single-level brick breaker where the player controls a robot paddle with a special attack bar that charges through gameplay, demonstrating the core robot identity and skill-based gameplay loop.**
+**Create a playable single-level brick breaker where the player controls a robot character with a special attack bar that charges through gameplay, demonstrating the core robot identity and skill-based gameplay loop.**
 
 ---
 
@@ -14,8 +14,8 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 
 ### Core Mechanics (Functional)
 - ✓ Ball physics with progressive speed increase
-- ✓ Smart paddle collision with momentum and angular control
-- ✓ Paddle movement (keyboard-based)
+- ✓ Smart player collision with momentum and angular control
+- ✓ Player movement (keyboard-based)
 - ✓ Brick destruction system
 - ✓ Death zone (ball falling off screen)
 - ✓ Basic scoring system
@@ -32,7 +32,7 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 - ✓ Scene transitions
 
 ### Special Mechanics (Partial)
-- ✓ Paddle skill attack system (hitbox above paddle)
+- ✓ Player skill attack system (hitbox above player)
 - ⚠️ Skill cooldown system implemented but not visually represented
 
 ---
@@ -43,8 +43,8 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 **Goal:** Make the existing game feel good to play
 
 #### 1.1 Robot Visual Identity
-- [ ] Replace paddle sprite with robot sprite (use existing robot-idle-anim assets)
-- [ ] Add idle animation to robot paddle
+- [ ] Replace player sprite with robot sprite (use existing robot-idle-anim assets)
+- [ ] Add idle animation to robot player
 - [ ] Ensure robot visually responds to movement (animation states)
 - [ ] Visual feedback when hitting ball (flash, particle effect, or animation frame)
 
@@ -59,7 +59,7 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 
 #### 1.3 Polish Existing Mechanics
 - [ ] Add sound effects for:
-  - Ball hitting paddle
+  - Ball hitting player
   - Ball hitting walls
   - Brick destruction (already have assets)
   - Special attack activation
@@ -105,7 +105,7 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 #### 3.1 Balance Pass
 - [ ] Tune special bar fill rate (too fast = boring, too slow = frustrating)
 - [ ] Adjust ball speed progression (currently 5s intervals, is this good?)
-- [ ] Review paddle speed (400 - feels good?)
+- [ ] Review player speed (400 - feels good?)
 - [ ] Balance special attack power/duration/cooldown
 - [ ] Test lives count (3 is standard, but is it right for this game?)
 
@@ -138,7 +138,7 @@ This document defines the Minimum Viable Product (MVP) for Robot Brick Breaker. 
 These systems are complex and interdependent. Building them before validating the core gameplay loop risks wasting development time on features that may not work well together. The MVP proves:
 1. Robot identity is compelling
 2. Special bar mechanic is satisfying
-3. Skill-based paddle gameplay is fun
+3. Skill-based player gameplay is fun
 
 Once the MVP is validated, these systems can be designed around a proven foundation.
 
@@ -148,7 +148,7 @@ Once the MVP is validated, these systems can be designed around a proven foundat
 
 ### MVP is successful if:
 1. **Core loop is fun:** Players want to replay levels to improve scores/time
-2. **Robot identity is clear:** Player feels like they're controlling a robot, not a generic paddle
+2. **Robot identity is clear:** Player feels like they're controlling a robot, not a generic character
 3. **Special attack is satisfying:** Players actively want to charge and use the special
 4. **Technical foundation is solid:** No major bugs, smooth performance
 5. **Scope is proven:** 3-5 levels demonstrate the game can scale
@@ -163,7 +163,7 @@ Once the MVP is validated, these systems can be designed around a proven foundat
 ## Technical Debt to Address
 
 ### Known Issues
-- Paddle sprite is placeholder (needs robot art)
+- Player sprite is placeholder (needs robot art)
 - No visual feedback for special bar charging
 - Sound integration incomplete (files exist but not all hooked up)
 - No combo or advanced scoring mechanics
@@ -171,7 +171,7 @@ Once the MVP is validated, these systems can be designed around a proven foundat
 
 ### Architecture Considerations
 - GameManager is good foundation, no changes needed
-- Ball/Paddle scripts are solid, may need minor tweaks for special bar integration
+- Ball/Player scripts are solid, may need minor tweaks for special bar integration
 - Brick system works but could use visual enhancement (animations, particles)
 - UI system functional but needs special bar widget
 

@@ -5,7 +5,7 @@ A simple brick breaker godot replica for study purposes
 
 ## Overview
 
-Welcome to **Brick Breaker Replica**, a fully functional 2D game developed in Godot Engine as a beginner-friendly project! This game is a modern recreation of the classic arcade hit *Breakout* (also known as Brick Breaker), where players control a paddle to bounce a ball and destroy bricks while progressing through increasingly challenging levels. It includes core mechanics like physics-based ball movement, brick destruction, a lives system (starting with 3 lives), multiple levels with varying difficulties, and intuitive menus for starting, pausing, and selecting levels.
+Welcome to **Brick Breaker Replica**, a fully functional 2D game developed in Godot Engine as a beginner-friendly project! This game is a modern recreation of the classic arcade hit *Breakout* (also known as Brick Breaker), where players control a robot character to bounce a ball and destroy bricks while progressing through increasingly challenging levels. It includes core mechanics like physics-based ball movement, brick destruction, a lives system (starting with 3 lives), multiple levels with varying difficulties, and intuitive menus for starting, pausing, and selecting levels.
 
 This project was inspired by a collaborative development guide created with the assistance of Grok 4, an AI model developed by xAI. It's designed to be simple yet extensible, making it an ideal starting point for aspiring game developers learning Godot. The game emphasizes modularity using Godot's node-based system, GDScript for scripting, and built-in physics for realistic interactions. Whether you're a hobbyist tweaking code or a student studying game design principles, this repo provides a solid foundation.
 
@@ -30,8 +30,8 @@ If you're new to Godot, this project doubles as a tutorial. Follow the guide in 
 |---|
 
 
-- **Paddle Controls**: Smooth left/right movement using keyboard or (optionally) mouse/touch input. The paddle uses Godot's KinematicBody2D for precise, non-physics-based control, preventing unwanted bounces.
-- **Ball Physics**: Realistic bouncing off walls, paddle, and bricks via RigidBody2D. Includes velocity adjustments for speed ramps in higher levels. The ball resets position after falling out, deducting a life.
+- **Player Controls**: Smooth left/right movement using keyboard or (optionally) mouse/touch input. The player character uses Godot's KinematicBody2D for precise, non-physics-based control, preventing unwanted bounces.
+- **Ball Physics**: Realistic bouncing off walls, player, and bricks via RigidBody2D. Includes velocity adjustments for speed ramps in higher levels. The ball resets position after falling out, deducting a life.
 - **Brick System**: Bricks arranged in customizable grids. Each brick has health (e.g., 1-3 hits to destroy), with visual feedback like color changes or animations. Bricks are instanced scenes for easy reuse.
 - **Collision and Destruction**: On-contact destruction with particle effects (using Godot's ParticleSystem2D) and sound cues. Score increases per brick broken.
 
@@ -40,7 +40,7 @@ If you're new to Godot, this project doubles as a tutorial. Follow the guide in 
   - Level 1: Basic grid of weak bricks.
   - Higher Levels: More bricks, faster ball speed, moving bricks, or obstacles.
   - Procedural elements: Scripts to generate brick patterns dynamically based on level number.
-- **Lives System**: Start with 3 lives. Lose one if the ball drops below the paddle. Visual hearts or counters display remaining lives. Game over screen appears at 0 lives, with options to restart or return to the menu.
+- **Lives System**: Start with 3 lives. Lose one if the ball drops below the player. Visual hearts or counters display remaining lives. Game over screen appears at 0 lives, with options to restart or return to the menu.
 - **Scoring**: Points awarded for breaking bricks (e.g., 10 points per basic brick, bonuses for combos). High score tracking saved via Godot's ConfigFile for persistence across sessions.
 
 ### User Interface and Menus
@@ -54,7 +54,7 @@ If you're new to Godot, this project doubles as a tutorial. Follow the guide in 
 - **Godot-Specific Features**: Utilizes signals for event handling (e.g., ball_brick_collision signal), AnimationPlayer for effects, and TileMap for potential background elements.
 - **Audio and Visuals**: Basic sound effects for bounces, breaks, and menus (import your own .wav files). Simple sprites or shapes for assets—easily replaceable with custom art.
 - **Performance Optimizations**: Node pooling for bricks to reduce instantiation overhead. Supports resolutions from 800x600 to full HD.
-- **Extensibility**: Modular code allows easy additions like power-ups (e.g., multi-ball, paddle enlargement) or enemy AI.
+- **Extensibility**: Modular code allows easy additions like power-ups (e.g., multi-ball, player enlargement) or enemy AI.
 
 ### **Pros of Playing/Developing This Game**:
 
@@ -142,24 +142,24 @@ Getting started is straightforward. This project is built with Godot 4.x, so ens
 
 ### 2. **Controls**:
 
-| - **Movement**: A/D keys or Left/Right arrows to move the paddle. |
+| - **Movement**: A/D keys or Left/Right arrows to move the player. |
 |---|
 
 
    - **Launch Ball**: Spacebar to release the ball at the start (or auto-launch after reset).
    - **Pause**: Escape key to bring up the pause menu.
    - **Quit**: Alt+F4 or via menu.
-   - (Optional: Mouse mode—click and drag paddle for alternative control.)
+   - (Optional: Mouse mode—click and drag player for alternative control.)
 
 ### 3. **Gameplay Loop**:
 
-| - Bounce the ball with the paddle to hit and destroy bricks. |
+| - Bounce the ball with the player to hit and destroy bricks. |
 |---|
 
 
    - Clear all bricks to advance to the next level.
    - If the ball falls, lose a life. At 0 lives, it's game over—try to beat your high score!
-   - Pro Tip: Angle your paddle hits for strategic bounces.
+   - Pro Tip: Angle your player hits for strategic bounces.
 
 4. **Winning the Game**: Complete all levels for a victory screen. Scores are saved, so challenge yourself to improve.
 
@@ -175,11 +175,11 @@ Getting started is straightforward. This project is built with Godot 4.x, so ens
 
 ### The project is organized for clarity:
 
-| - **Scenes Folder** (`res://scenes/`): Contains Paddle.tscn, Ball.tscn, Brick.tscn, Level.tscn, menus, etc. |
+| - **Scenes Folder** (`res://scenes/`): Contains Player.tscn, Ball.tscn, Brick.tscn, Level.tscn, menus, etc. |
 |---|
 
 
-- **Scripts Folder** (`res://scripts/`): GDScript files like Paddle.gd, Ball.gd, GameManager.gd (handles states, scores, lives).
+- **Scripts Folder** (`res://scripts/`): GDScript files like Player.gd, Ball.gd, GameManager.gd (handles states, scores, lives).
 - **Assets Folder** (`res://assets/`): Sprites, sounds, fonts.
 - **Main Scene**: `Main.tscn` orchestrates everything, using a state machine for menu vs. gameplay transitions.
 
