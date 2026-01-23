@@ -13,18 +13,22 @@ extends CharacterBody2D
 @export var float_frequency: float = 2.0  # Speed of floating motion
 
 # Weapon hit tuning
-@export var weapon_forward_offset: float = 25.0 # distance above player
-@export var weapon_thickness: float = 6.0 # height of the hitzone shape
-@export var hit_duration: float = 0.18 # seconds the hit will be active
-@export var hit_cooldown: float = 0.65 # seconds before the hit can be triggered again
+@export var weapon_forward_offset: float = 20.0 # distance above player
+@export var weapon_width: float = 20.0 # width of the weapon swing
+@export var weapon_thickness: float = 8.0 # thickness of the hitzone
+@export var hit_duration: float = 0.2 # seconds the hit will be active
+@export var hit_cooldown: float = 0.5 # seconds before the hit can be triggered again
+@export var weapon_hit_boost: float = 1.5 # Multiplier for ball velocity when hit by weapon
 
 var _hit_time_left: float = 0.0
 var _cooldown_left: float = 0.0
 var _current_tilt: float = 0.0  # Current tilt angle
 var _float_time: float = 0.0  # Time accumulator for floating
+var _weapon_active: bool = false  # Track if weapon is currently active
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D # Reference the player's collision shape
-@onready var weapon_hitbox: CollisionShape2D = $WeaponHitbox # Reference the weapon hitbox collision shape
+@onready var weapon_area: Area2D = $WeaponArea # Reference the weapon hitbox area
+@onready var weapon_hitbox: CollisionShape2D = $WeaponArea/CollisionShape2D # Reference the weapon hitbox collision shape
 @onready var visual_root: Node2D = self  # Will store visual elements for rotation
 
 func get_width() -> float:
@@ -36,6 +40,10 @@ func get_width() -> float:
 func _ready():
 	setup_weapon_hitbox()
 	set_weapon_active(false)
+	# Connect weapon hit signal
+	if weapon_area:
+		print_debug("Connecting weapon hit signal")
+		weapon_area.body_entered.connect(_on_weapon_hit)
 
 func setup_weapon_hitbox() -> void:
 	# Ensure the main shape is a capsule (needed to compute top edge and width)
@@ -44,24 +52,13 @@ func setup_weapon_hitbox() -> void:
 		push_warning("Players CollisionShape2D should be CapsuleShape2D for weapon positioning.")
 		return
 	
-	# Create the weapon capsule
-	var cap := CapsuleShape2D.new()
-	# Thickness controls the capsule's vertical thickness when horizontal:
-	# thickness = 2 * radius => radius = thickness / 2
-	cap.radius = max(weapon_thickness * 0.5, 0.0)
+	# Create a rectangular weapon hitbox - better for bat-like weapon feel
+	var rect := RectangleShape2D.new()
+	rect.size = Vector2(weapon_width, weapon_thickness)
 	
-	# Make the skill capsule span the player's width:
-	# When rotated 90., the horizontal length of the capsule is (height + 2 * radius)
-	# We want that to match player's width ( = 2 * player_cap.radius)
-	var player_width := get_width() # 2 * player_cap.radius
-	cap.height = max((16.0 * cap.radius), 0.0) # if <= 0, it becomes a circle
+	weapon_hitbox.shape = rect
 	
-	weapon_hitbox.shape = cap
-	
-	# Rotate 90. so the capsule becomes horizontal (thin bar above the player)
-	weapon_hitbox.rotation_degrees = 90.0
-	
-	# Position it above the top edge
+	# Position it above the player
 	update_weapon_hitbox_transform()
 
 func update_weapon_hitbox_transform() -> void:
@@ -75,19 +72,21 @@ func update_weapon_hitbox_transform() -> void:
 	# Player is centered at its origin; top edge is at -total_height / 2
 	var top_edge := -total_height * 0.5
 	
-	# The weapon capsule's vertical thickness (in world y) is it diameter (2*radius)
-	var half_thickness := weapon_thickness * 0.5
-	
-	# Center the weapon capsule so its bottom edge is offset above the player's top edge
-	var y := top_edge - weapon_forward_offset - half_thickness
+	# Position the weapon area above the player
+	var y := top_edge - weapon_forward_offset
 	
 	# Keep centered in x
-	weapon_hitbox.position = Vector2(0.0, y)
+	if weapon_area:
+		weapon_area.position = Vector2(0.0, y)
 	
 
 func set_weapon_active(active: bool) -> void:
-	if weapon_hitbox:
-		weapon_hitbox.disabled = not active
+	_weapon_active = active
+	print_debug("Setting weapon active: " + str(active))
+	if weapon_area:
+		weapon_area.monitoring = active
+		weapon_area.monitorable = active
+		print_debug("Weapon area monitoring: " + str(weapon_area.monitoring))
 
 func _physics_process(delta: float) -> void:
 	# Get input direction
@@ -155,3 +154,32 @@ func try_activate_hit() -> void:
 	set_weapon_active(true)
 	_hit_time_left = hit_duration
 	_cooldown_left = hit_cooldown
+
+func _on_weapon_hit(body: Node2D) -> void:
+	print_debug("Weapon hit detected with body: " + str(body))
+	if not _weapon_active:
+		return
+		
+	# Check if it's the ball
+	if body is RigidBody2D and body.name == "Ball":
+		print_debug("Weapon hit detected on ball!")
+		var ball := body as RigidBody2D
+		
+		# Calculate hit direction based on where ball was hit
+		var hit_offset = (ball.global_position.x - global_position.x) / (get_width() / 2)
+		hit_offset = clamp(hit_offset, -1.0, 1.0)
+		
+		# Apply strong upward force with horizontal component based on hit position
+		var hit_direction = Vector2(hit_offset * 0.7, -1.0).normalized()
+		
+		# Get current ball speed and boost it
+		var current_speed = ball.linear_velocity.length()
+		var boosted_speed = current_speed * weapon_hit_boost
+		
+		# Apply player momentum to the ball
+		hit_direction.x += velocity.x / max_speed * 0.4
+		
+		# Set the new velocity with boost
+		ball.linear_velocity = hit_direction.normalized() * boosted_speed
+		
+		print("Weapon hit! Boosted ball to speed: ", boosted_speed)
