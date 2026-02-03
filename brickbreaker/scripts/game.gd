@@ -4,6 +4,7 @@ extends Node2D
 @onready var ball_container = $BallContainer
 @onready var level_container = $LevelContainer
 @onready var ui = $UI
+@onready var camera = $Camera2D
 
 const BallScene = preload("res://scenes/Ball.tscn")
 const PauseMenuScene = preload("res://scenes/PauseMenu.tscn")
@@ -11,15 +12,28 @@ const PauseMenuScene = preload("res://scenes/PauseMenu.tscn")
 var ball_on_player: bool = true
 var bricks_node: Node = null
 
+# Camera shake variables
+var shake_intensity: float = 0.0
+var shake_decay: float = 5.0
+var camera_original_position: Vector2 = Vector2.ZERO
+
 func _ready() -> void:
 	load_level(GameManager.current_level)
 
 	reset_ball()
 	
+	# Store original camera position for shake effect
+	if camera:
+		camera_original_position = camera.position
+	
 	GameManager.lives_updated.connect(ui.update_lives)
 	GameManager.score_updated.connect(ui.update_score)
 	ui.update_lives(GameManager.current_lives)
 	ui.update_score(GameManager.current_score)
+	
+	# Connect to player's weapon hit signal
+	if player:
+		player.weapon_hit.connect(_on_weapon_impact)
 
 func load_level(level_number: int) -> void:
 	# Remove previous level
@@ -51,7 +65,7 @@ func load_level(level_number: int) -> void:
 		print("Connected DeathZone signal")
 	
 	
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	# Update ball position in physics_process to sync with player movement
 	if ball_on_player:
 		var ball = ball_container.get_child(0)
@@ -73,6 +87,9 @@ func _process(delta: float) -> void:
 			get_tree().paused = true
 			var pause_menu = PauseMenuScene.instantiate()
 			add_child(pause_menu)
+	
+	# Update camera shake
+	update_camera_shake(delta)
 
 func connect_bricks(bricks: Node):
 	# Recursively find and connect brick signals
@@ -133,3 +150,30 @@ func _on_ball_lost():
 	GameManager.lose_life()
 	if GameManager.current_lives > 0:
 		reset_ball()
+
+func shake_camera(intensity: float):
+	"""Trigger camera shake with given intensity"""
+	shake_intensity = intensity
+
+func update_camera_shake(delta: float):
+	"""Update camera shake effect"""
+	if not camera:
+		return
+		
+	if shake_intensity > 0:
+		# Generate random offset based on intensity
+		var offset = Vector2(
+			randf_range(-shake_intensity, shake_intensity),
+			randf_range(-shake_intensity, shake_intensity)
+		)
+		camera.offset = offset
+		
+		# Decay shake over time
+		shake_intensity = max(0, shake_intensity - shake_decay * delta)
+	else:
+		# Return camera to original position
+		camera.offset = camera.offset.lerp(Vector2.ZERO, 10.0 * delta)
+
+func _on_weapon_impact(hit_strength: float):
+	"""Called when weapon hits the ball - triggers screen shake"""
+	shake_camera(hit_strength)

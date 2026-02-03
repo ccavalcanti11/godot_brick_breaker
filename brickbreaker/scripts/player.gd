@@ -1,5 +1,8 @@
 extends CharacterBody2D
 
+# Signals
+signal weapon_hit(hit_strength: float) # Emitted when weapon successfully hits the ball
+
 # Movement settings
 @export var max_speed: float = 400.0
 @export var acceleration: float = 2000.0  # How fast robot speeds up
@@ -20,11 +23,18 @@ extends CharacterBody2D
 @export var hit_cooldown: float = 0.5 # seconds before the hit can be triggered again
 @export var weapon_hit_boost: float = 1.5 # Multiplier for ball velocity when hit by weapon
 
+# Impact feel settings
+@export var hitstop_duration: float = 0.08 # Brief freeze on impact
+@export var impact_scale_amount: float = 1.15 # How much to scale up on impact
+@export var impact_scale_duration: float = 0.12 # Duration of scale effect
+@export var shake_intensity: float = 8.0 # Camera shake intensity on hit
+
 var _hit_time_left: float = 0.0
 var _cooldown_left: float = 0.0
 var _current_tilt: float = 0.0  # Current tilt angle
 var _float_time: float = 0.0  # Time accumulator for floating
 var _weapon_active: bool = false  # Track if weapon is currently active
+var _impact_scale_time: float = 0.0 # Timer for impact scale animation
 
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D # Reference the player's collision shape
 @onready var weapon_area: Area2D = $WeaponArea # Reference the weapon hitbox area
@@ -123,10 +133,10 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("player_hit"):
 		try_activate_hit()
 
-func update_robot_visuals(delta: float, direction: float) -> void:
+func update_robot_visuals(delta: float, _direction: float) -> void:
 	# Floating motion - subtle sine wave
 	_float_time += delta * float_frequency
-	var float_offset = sin(_float_time) * float_amplitude
+	var _float_offset = sin(_float_time) * float_amplitude
 	
 	# Calculate target tilt based on velocity (not just input direction)
 	var velocity_factor = clamp(velocity.x / max_speed, -1.0, 1.0)
@@ -139,8 +149,16 @@ func update_robot_visuals(delta: float, direction: float) -> void:
 	# Note: We rotate the entire node, but collision stays upright
 	rotation_degrees = _current_tilt
 	
-	# Apply floating offset (you can add a visual node to offset separately if needed)
-	# For now, this creates a subtle hover effect on the entire paddle
+	# Handle impact scale animation
+	if _impact_scale_time > 0.0:
+		_impact_scale_time -= delta
+		# Scale punch effect using elastic ease-out
+		var scale_progress = 1.0 - (_impact_scale_time / impact_scale_duration)
+		var scale_value = lerp(impact_scale_amount, 1.0, ease(scale_progress, -2.0))
+		scale = Vector2(scale_value, scale_value)
+	else:
+		# Return to normal scale smoothly
+		scale = scale.lerp(Vector2.ONE, 10.0 * delta)
 
 func try_activate_hit() -> void:
 	#Respect active window cooldown
@@ -183,3 +201,23 @@ func _on_weapon_hit(body: Node2D) -> void:
 		ball.linear_velocity = hit_direction.normalized() * boosted_speed
 		
 		print("Weapon hit! Boosted ball to speed: ", boosted_speed)
+		
+		# IMPACT EFFECTS
+		# 1. Trigger hit-stop (freeze frame)
+		apply_hitstop()
+		
+		# 2. Trigger impact scale animation on player
+		_impact_scale_time = impact_scale_duration
+		
+		# 3. Emit signal for camera shake
+		weapon_hit.emit(shake_intensity)
+		
+		# 4. Tell ball to show impact effect
+		if ball.has_method("on_weapon_impact"):
+			ball.on_weapon_impact()
+
+func apply_hitstop():
+	"""Creates a brief freeze-frame effect for impact feel"""
+	get_tree().paused = true
+	await get_tree().create_timer(hitstop_duration, true, false, true).timeout
+	get_tree().paused = false

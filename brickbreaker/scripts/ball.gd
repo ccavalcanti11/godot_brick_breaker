@@ -6,7 +6,12 @@ extends RigidBody2D
 @export var max_speed = 800 # Maximum speed the ball can reach
 @export var speed_increase_interval = 5.0 # Time in seconds between speed increases
 
+# Impact feel settings
+@export var impact_scale_amount: float = 1.25 # How much to scale on weapon hit
+@export var impact_scale_duration: float = 0.15 # Duration of impact scale
+
 var _time_since_last_increase = 0.0 # Tracks time since the last speed increase
+var _impact_scale_time: float = 0.0 # Timer for impact scale animation
 
 func _ready():
 	# Set proper RigidBody2D properties
@@ -38,6 +43,24 @@ func _physics_process(delta: float) -> void:
 	if abs(linear_velocity.y) < min_vertical_speed and linear_velocity.length() > 0:
 		linear_velocity.y = sign(linear_velocity.y) * min_vertical_speed
 		linear_velocity = linear_velocity.normalized() * speed
+	
+	# Handle impact scale animation
+	if _impact_scale_time > 0.0:
+		_impact_scale_time -= delta
+		# Squash and stretch effect - compress in direction of travel, expand perpendicular
+		var scale_progress = 1.0 - (_impact_scale_time / impact_scale_duration)
+		
+		# Elastic ease-out for snappy feel
+		var scale_value = lerp(impact_scale_amount, 1.0, ease(scale_progress, -2.0))
+		
+		# Apply squash based on velocity direction
+		var velocity_dir = linear_velocity.normalized()
+		var stretch_x = 1.0 + abs(velocity_dir.x) * (scale_value - 1.0)
+		var stretch_y = 1.0 + abs(velocity_dir.y) * (scale_value - 1.0)
+		scale = Vector2(stretch_x, stretch_y)
+	else:
+		# Return to normal scale smoothly
+		scale = scale.lerp(Vector2.ONE, 12.0 * delta)
 
 func _on_body_entered(body: Node) -> void:
 	if body is CharacterBody2D or body is StaticBody2D or body is RigidBody2D:
@@ -78,3 +101,8 @@ func increase_speed(delta: float) -> void:
 		if speed < max_speed:
 			speed += speed_increment
 			print("Increased ball speed to: ",  speed)
+
+func on_weapon_impact():
+	"""Called by player when weapon hits the ball"""
+	_impact_scale_time = impact_scale_duration
+	# Add a small flash or particle effect here if desired
