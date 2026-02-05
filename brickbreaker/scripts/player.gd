@@ -27,7 +27,7 @@ signal weapon_hit(hit_strength: float) # Emitted when weapon successfully hits t
 @export var hitstop_duration: float = 0.08 # Brief freeze on impact
 @export var impact_scale_amount: float = 1.15 # How much to scale up on impact
 @export var impact_scale_duration: float = 0.12 # Duration of scale effect
-@export var shake_intensity: float = 8.0 # Camera shake intensity on hit
+@export var shake_intensity: float = 3.0 # Camera shake intensity on hit
 
 var _hit_time_left: float = 0.0
 var _cooldown_left: float = 0.0

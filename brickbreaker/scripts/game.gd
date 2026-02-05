@@ -14,7 +14,7 @@ var bricks_node: Node = null
 
 # Camera shake variables
 var shake_intensity: float = 0.0
-var shake_decay: float = 5.0
+var shake_decay: float = 15.0  # Higher = faster decay
 var camera_original_position: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
@@ -25,6 +25,9 @@ func _ready() -> void:
 	# Store original camera position for shake effect
 	if camera:
 		camera_original_position = camera.position
+		print("Camera found: ", camera.name)
+	else:
+		print("WARNING: No camera found for shake effect!")
 	
 	GameManager.lives_updated.connect(ui.update_lives)
 	GameManager.score_updated.connect(ui.update_score)
@@ -159,8 +162,9 @@ func update_camera_shake(delta: float):
 	"""Update camera shake effect"""
 	if not camera:
 		return
-		
+	
 	if shake_intensity > 0:
+		print_debug("Shaking camera with intensity: ", shake_intensity)
 		# Generate random offset based on intensity
 		var offset = Vector2(
 			randf_range(-shake_intensity, shake_intensity),
@@ -176,4 +180,5 @@ func update_camera_shake(delta: float):
 
 func _on_weapon_impact(hit_strength: float):
 	"""Called when weapon hits the ball - triggers screen shake"""
+	print_debug("Weapon impact received with strength: ", hit_strength)
 	shake_camera(hit_strength)
